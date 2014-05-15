@@ -1,0 +1,22 @@
+{
+	"name": "echo511/leanmapper",
+	"description": "LeanMapper integration into Nette Framework.",
+	"authors": [
+		{
+			"name": "Nikolas Tsiongas",
+			"homepage": "http://congi.cz"
+		}
+	],
+	"require": {
+		"nette/nette": "2.2.x-dev",
+		"tharos/leanmapper": "dev-develop"
+	},
+	"require-dev": {
+		"nette/tester": "1.1.*@dev"
+	},
+	"autoload": {
+		"psr-4": {
+			"Echo511\\LeanMapper\\": "src/Echo511/LeanMapper/"
+		}
+	}
+}

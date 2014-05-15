@@ -1,0 +1,10 @@
+services:
+	-
+		class: Echo511Tests\LeanMapper\Entity\User
+		implement: Echo511Tests\LeanMapper\Entity\IUserFactory
+		arguments: [%arg%]
+		parameters: [arg]
+
+	- Echo511Tests\LeanMapper\Entity\IRoleFactory
+
+	- Echo511Tests\LeanMapper\Entity\Dummy
