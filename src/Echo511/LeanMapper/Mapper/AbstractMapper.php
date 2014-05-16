@@ -1,6 +1,6 @@
 <?php
 
-namespace Echo511\LeanMapper;
+namespace Echo511\LeanMapper\Mapper;
 
 use LeanMapper\Caller;
 use LeanMapper\IMapper;

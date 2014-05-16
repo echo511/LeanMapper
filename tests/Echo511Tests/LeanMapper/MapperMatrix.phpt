@@ -2,10 +2,10 @@
 
 namespace Echo511Tests\LeanMapper;
 
-$container = require __DIR__ . '/bootstrap.php';
+$container = require __DIR__ . '/../../bootstrap.php';
 
-use Echo511\LeanMapper\AbstractMapper;
-use Echo511\LeanMapper\MapperMatrix;
+use Echo511\LeanMapper\Mapper\AbstractMapper;
+use Echo511\LeanMapper\Mapper\MapperMatrix;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -51,7 +51,7 @@ class MapperMatrixTest extends TestCase
 
 		Assert::exception(function() use ($matrix) {
 			$matrix->getPrimaryKey('one_foo_user');
-		}, 'Echo511\LeanMapper\MapperMatrixException');
+		}, 'Echo511\LeanMapper\Mapper\MapperMatrixException');
 	}
 
 

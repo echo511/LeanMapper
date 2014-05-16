@@ -1,6 +1,6 @@
 <?php
 
-namespace Echo511\LeanMapper;
+namespace Echo511\LeanMapper\EntityFactory;
 
 use LeanMapper\IEntityFactory;
 use Nette\DI\Container;

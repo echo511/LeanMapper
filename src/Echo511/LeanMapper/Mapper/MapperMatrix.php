@@ -1,9 +1,10 @@
 <?php
 
-namespace Echo511\LeanMapper;
+namespace Echo511\LeanMapper\Mapper;
 
 use LeanMapper\Caller;
 use LeanMapper\IMapper;
+use LeanMapper\Reflection\EntityReflection;
 use LeanMapper\Row;
 use Nette\Object;
 
@@ -15,22 +16,22 @@ class MapperMatrix extends Object implements IMapper
 {
 
 	/** @var AbstractMapper[] */
-	protected $mappers;
+	protected $mappers = array();
 
 	/** @var bool */
 	private $init = false;
 
 	/** @var AbstractMapper[] */
-	private $tableToMapper;
+	private $tableToMapper = array();
 
 	/** @var AbstractMapper[] */
-	private $entityClassToMapper;
+	private $entityClassToMapper = array();
 
 	/** @var AbstractMapper[] */
-	private $entityNamespaceToMapper;
+	private $entityNamespaceToMapper = array();
 
 	/** @var AbstractMapper[] */
-	private $repositoryClassToMapper;
+	private $repositoryClassToMapper = array();
 
 	/**
 	 * Add mapper to matrix.
@@ -40,6 +41,22 @@ class MapperMatrix extends Object implements IMapper
 	{
 		$mapper->setMatrix($this);
 		$this->mappers[] = $mapper;
+	}
+
+
+
+	/**
+	 * Get reflections of all entities in project.
+	 * @return EntityReflection[]
+	 */
+	public function getAllReflections()
+	{
+		$this->init();
+		$reflections = array();
+		foreach ($this->entityClassToMapper as $entityClass => $mapper) {
+			$reflections[] = new EntityReflection($entityClass, $this);
+		}
+		return $reflections;
 	}
 
 

@@ -14,30 +14,51 @@ class LeanMapperExtension extends CompilerExtension
 {
 
 	public $config = array(
+	    'databaseType' => 'mysql',
 	    'host' => '127.0.0.1',
+	    'database' => 'testdb',
 	    'username' => 'root',
-	    'password' => '',
-	    'database' => '',
+	    'password' => ''
 	);
 
 	public function loadConfiguration()
 	{
 		$config = $this->getConfig($this->config);
 
+		$this->containerBuilder->addDefinition($this->prefix('configurator'))
+			->setClass('Echo511\LeanMapper\Configurator', array($config));
+		
 		$connection = $this->containerBuilder->addDefinition($this->prefix('connection'))
-			->setClass('LeanMapper\Connection', array(array(
-			'host' => $config['host'],
-			'username' => $config['username'],
-			'password' => $config['password'],
-			'database' => $config['database']
-		)));
+			->setClass('LeanMapper\Connection')
+			->setFactory('@Echo511\LeanMapper\Configurator::getConnection');
+
+		$this->containerBuilder->addDefinition($this->prefix('mapperFactory'))
+			->setClass('Echo511\LeanMapper\Mapper\MapperMatrixFactory');
 
 		$this->containerBuilder->addDefinition($this->prefix('mapper'))
-			->setClass('Echo511\LeanMapper\MapperMatrix')
-			->setFactory('Echo511\LeanMapper\MapperMatrixFactory::create');
+			->setClass('Echo511\LeanMapper\Mapper\MapperMatrix')
+			->setFactory('@Echo511\LeanMapper\Mapper\MapperMatrixFactory::create');
 
 		$this->containerBuilder->addDefinition($this->prefix('entityFactory'))
-			->setClass('Echo511\LeanMapper\EntityFactory');
+			->setClass('Echo511\LeanMapper\EntityFactory\EntityFactory');
+
+		$this->containerBuilder->addDefinition($this->prefix('schemaGenerator'))
+			->setClass('Echo511\LeanMapper\Schema\SchemaGenerator');
+		
+		$this->containerBuilder->addDefinition($this->prefix('databaseSchemaManipulator'))
+			->setClass('Echo511\LeanMapper\Schema\DatabaseSchemaManipulator');
+
+		$this->containerBuilder->addDefinition($this->prefix('createDatabase'))
+			->setClass('Echo511\LeanMapper\Command\CreateDatabaseCommand')
+			->addTag('kdyby.console.command');
+		
+		$this->containerBuilder->addDefinition($this->prefix('updateDatabase'))
+			->setClass('Echo511\LeanMapper\Command\UpdateDatabaseCommand')
+			->addTag('kdyby.console.command');
+		
+		$this->containerBuilder->addDefinition($this->prefix('dropDatabase'))
+			->setClass('Echo511\LeanMapper\Command\DropDatabaseCommand')
+			->addTag('kdyby.console.command');
 
 		$useProfiler = isset($config['profiler']) ? $config['profiler'] : $this->containerBuilder->parameters['debugMode'];
 
@@ -60,7 +81,7 @@ class LeanMapperExtension extends CompilerExtension
 	 * @param Configurator $configurator
 	 * @param string $name
 	 */
-	public static function register(Configurator $configurator, $name = 'leanMapper')
+	public static function register(Configurator $configurator, $name = 'leanmapper')
 	{
 		$configurator->onCompile[] = function ($config, Compiler $compiler) use ($name) {
 			$compiler->addExtension($name, new LeanMapperExtension());

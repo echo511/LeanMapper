@@ -8,3 +8,8 @@ services:
 	- Echo511Tests\LeanMapper\Entity\IRoleFactory
 
 	- Echo511Tests\LeanMapper\Entity\Dummy
+
+	-
+		class: Echo511Tests\LeanMapper\Entity\Mapper
+		tags: [echo511.leanmapper.mapper]
+

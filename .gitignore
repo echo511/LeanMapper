@@ -2,3 +2,5 @@
 /temp/
 /vendor/
 /composer.lock
+/tests/Echo511Tests/LeanMapper/output/
+/log/

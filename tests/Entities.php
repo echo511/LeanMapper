@@ -2,13 +2,14 @@
 
 namespace Echo511Tests\LeanMapper\Entity;
 
+use Echo511\LeanMapper\Mapper\AbstractMapper;
 use LeanMapper\Entity;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $email
- * @property Role $role
+ * @property Role $role m:hasOne
  */
 class User extends Entity
 {
@@ -58,4 +59,16 @@ interface IRoleFactory
 
 	/** @return Role */
 	function create();
+}
+
+class Mapper extends AbstractMapper
+{
+
+	public function getMappingMetadata()
+	{
+		return $this->buildMetadata(array('user', 'role'), 'Echo511Tests\LeanMapper', 'prefix_');
+	}
+
+
+
 }
