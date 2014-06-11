@@ -31,6 +31,17 @@ class MapperMatrixTest extends TestCase
 
 
 
+	public function testManyToMany()
+	{
+		$matrix = new MapperMatrix();
+		$matrix->addMapper(new OneMapper());
+		$matrix->addMapper(new SecondMapper());
+		
+		Assert::equal('one_foo_role_id', $matrix->getRelationshipColumn($matrix->getRelationshipTable('one_foo_user', 'one_foo_role'), 'one_foo_role'));
+	}
+
+
+
 	public function testMapperSynergy()
 	{
 		$matrix = new MapperMatrix();

@@ -3,6 +3,7 @@
 namespace Echo511\LeanMapper\Mapper;
 
 use LeanMapper\Caller;
+use LeanMapper\DefaultMapper;
 use LeanMapper\IMapper;
 use LeanMapper\Reflection\EntityReflection;
 use LeanMapper\Row;
@@ -14,6 +15,9 @@ use Nette\Object;
  */
 class MapperMatrix extends Object implements IMapper
 {
+
+	/** @var DefaultMapper */
+	protected $defaultMapper;
 
 	/** @var AbstractMapper[] */
 	protected $mappers = array();
@@ -112,7 +116,9 @@ class MapperMatrix extends Object implements IMapper
 	public function getRelationshipTable($sourceTable, $targetTable)
 	{
 		$this->init();
-		return $this->getMapperByTable($sourceTable)->getRelationshipTable($sourceTable, $targetTable);
+		$table = $this->getMapperByTable($sourceTable)->getRelationshipTable($sourceTable, $targetTable);
+		$this->tableToMapper[$table] = $this->defaultMapper;
+		return $table;
 	}
 
 
@@ -205,6 +211,8 @@ class MapperMatrix extends Object implements IMapper
 	private function init()
 	{
 		if (!$this->init) {
+			$this->init = true;
+			$this->defaultMapper = new DefaultMapper;
 			$this->checkConflicts();
 			foreach ($this->mappers as $mapper) {
 				foreach ($mapper->getMappedTables() as $table) {

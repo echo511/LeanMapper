@@ -10,6 +10,7 @@ use LeanMapper\Entity;
  * @property string $name
  * @property string $email
  * @property Role $role m:hasOne
+ * @property Role[] $roles m:hasMany
  */
 class User extends Entity
 {
