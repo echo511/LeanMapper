@@ -54,7 +54,7 @@ class DatabaseSchemaManipulator extends Object
 		    'host' => $this->configurator->getHost(),
 		    'driver' => 'pdo_' . $this->configurator->getDatabaseType(),
 			), $this->getDBALDriver());
-		$this->schemaManager = new MySqlSchemaManager($this->connection, $this->getDBALPlatform());
+		$this->schemaManager = $this->getDBALSchemaManager();
 	}
 
 
@@ -137,6 +137,15 @@ class DatabaseSchemaManipulator extends Object
 	public function getDesiredSchema()
 	{
 		return $this->schemaGenerator->createSchema($this->mapperMatrix->getAllReflections());
+	}
+
+
+
+	protected function getDBALSchemaManager()
+	{
+		if ($this->configurator->getDatabaseType() == 'mysql') {
+			return new MySqlSchemaManager($this->connection, $this->getDBALPlatform());
+		}
 	}
 
 
