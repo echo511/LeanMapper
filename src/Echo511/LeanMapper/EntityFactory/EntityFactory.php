@@ -37,7 +37,7 @@ class EntityFactory extends Object implements IEntityFactory
 	/** @inheritdoc */
 	public function createEntity($entityClass, $arg = null)
 	{
-		if ($factory = $this->container->getByType($this->resolveEntityFactory($entityClass))) {
+		if ($factory = $this->container->getByType($this->resolveEntityFactory($entityClass), false)) {
 			return $factory->create($arg);
 		}
 		return new $entityClass($arg);
