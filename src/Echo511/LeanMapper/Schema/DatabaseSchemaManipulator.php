@@ -48,8 +48,8 @@ class DatabaseSchemaManipulator extends Object
 		$this->mapperMatrix = $mapperMatrix;
 
 		$this->connection = new DBALConnection(array(
-		    'dbname' => $this->configurator->getDatabase(),
-		    'user' => $this->configurator->getUsername(),
+		    'dbname' => $this->configurator->getDbName(),
+		    'user' => $this->configurator->getUser(),
 		    'password' => $this->configurator->getPassword(),
 		    'host' => $this->configurator->getHost(),
 		    'driver' => 'pdo_' . $this->configurator->getDatabaseType(),

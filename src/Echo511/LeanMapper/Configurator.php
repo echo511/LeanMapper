@@ -2,8 +2,10 @@
 
 namespace Echo511\LeanMapper;
 
+use DibiPdoDriver;
 use LeanMapper\Connection;
 use Nette\Object;
+use PDO;
 
 /**
  * Configure database connection.
@@ -13,19 +15,19 @@ class Configurator extends Object
 {
 
 	/** @var string */
-	private $databaseType;
+	private $driver;
 
 	/** @var string */
 	private $host;
 
 	/** @var string */
-	private $username;
+	private $user;
 
 	/** @var string */
 	private $password;
 
 	/** @var string */
-	private $database;
+	private $dbname;
 
 	/** @var Connection */
 	private $connection;
@@ -35,11 +37,11 @@ class Configurator extends Object
 	 */
 	public function __construct(array $config)
 	{
-		$this->databaseType = $config['databaseType'];
+		$this->driver = $config['driver'];
 		$this->host = $config['host'];
-		$this->username = $config['username'];
+		$this->user = $config['user'];
 		$this->password = $config['password'];
-		$this->database = $config['database'];
+		$this->dbname = $config['dbname'];
 	}
 
 
@@ -50,9 +52,12 @@ class Configurator extends Object
 	public function getConnection()
 	{
 		if (!$this->connection) {
+			if ($this->driver == 'pdo_mysql') {
+				$type = 'mysql';
+			}
 			$config['driver'] = 'pdo';
-			$config['dsn'] = $this->getDatabaseType() . ':host=' . $this->getHost() . ';dbname=' . $this->getDatabase();
-			$config['username'] = $this->getUsername();
+			$config['dsn'] = $type . ':host=' . $this->getHost() . ';dbname=' . $this->getDbName();
+			$config['username'] = $this->getUser();
 			$config['password'] = $this->getPassword();
 			$this->connection = new Connection($config);
 		}
@@ -64,7 +69,10 @@ class Configurator extends Object
 	/** @return string */
 	public function getDatabaseType()
 	{
-		return $this->databaseType;
+		$driver = $this->getConnection()->getDriver();
+		if ($driver instanceof DibiPdoDriver) {
+			return $driver->getResource()->getAttribute(PDO::ATTR_DRIVER_NAME);
+		}
 	}
 
 
@@ -78,9 +86,9 @@ class Configurator extends Object
 
 
 	/** @return string */
-	public function getUsername()
+	public function getUser()
 	{
-		return $this->username;
+		return $this->user;
 	}
 
 
@@ -94,9 +102,9 @@ class Configurator extends Object
 
 
 	/** @return string */
-	public function getDatabase()
+	public function getDbName()
 	{
-		return $this->database;
+		return $this->dbname;
 	}
 
 

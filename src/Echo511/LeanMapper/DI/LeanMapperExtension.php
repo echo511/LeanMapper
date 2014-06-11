@@ -14,10 +14,10 @@ class LeanMapperExtension extends CompilerExtension
 {
 
 	public $config = array(
-	    'databaseType' => 'mysql',
+	    'driver' => 'pdo_mysql',
 	    'host' => '127.0.0.1',
-	    'database' => 'testdb',
-	    'username' => 'root',
+	    'dbname' => 'testdb',
+	    'user' => 'root',
 	    'password' => ''
 	);
 
