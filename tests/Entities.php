@@ -6,11 +6,14 @@ use Echo511\LeanMapper\Mapper\AbstractMapper;
 use LeanMapper\Entity;
 
 /**
- * @property int $id
+ * @property int $id m:autoincrement
+ * @property string $username m:size(255)
  * @property string $name
- * @property string $email
+ * @property string $email m:unique
  * @property Role $role m:hasOne
  * @property Role[] $roles m:hasMany
+ * @property \DateTime $created m:comment(Date of user creation)
+ * @property \DateTime $customCreatedFormat m:format(string)
  */
 class User extends Entity
 {

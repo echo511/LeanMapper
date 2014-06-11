@@ -70,17 +70,7 @@ class SchemaGenerator extends Object
 						$table->setPrimaryKey([$property->getColumn()]);
 						if ($property->hasCustomFlag('unique')) {
 							throw new InvalidAnnotationException(
-							"Entity {$reflection->name}:{$property->getName()} - m:unique can not be used together with m:pk."
-							);
-						}
-						$column->setAutoincrement(true);
-					}
-
-					if ($property->hasCustomFlag('primaryKey')) {
-						$table->setPrimaryKey([$property->getColumn()]);
-						if ($property->hasCustomFlag('unique')) {
-							throw new InvalidAnnotationException(
-							"Entity {$reflection->name}:{$property->getName()} - m:unique can not be used together with m:pk."
+							"Entity {$reflection->name}:{$property->getName()} - m:unique can not be used together with primary key."
 							);
 						}
 					}
