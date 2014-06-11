@@ -91,21 +91,27 @@ class SchemaGenerator extends Object
 				} else {
 					$relationship = $property->getRelationship();
 
+					// primary keys types
+					$sourcePrimaryKey = $this->mapperMatrix->getPrimaryKey($this->mapperMatrix->getTable($reflection->getName()));
+					$sourcePrimaryKeyType = $reflection->getEntityProperty($sourcePrimaryKey)->getType();
+					$targetPrimaryKey = $this->mapperMatrix->getPrimaryKey($relationship->getTargetTable());
+					$targetPrimaryKeyType = (new EntityReflection($this->mapperMatrix->getEntityClass($relationship->getTargetTable()), $this->mapperMatrix))->getEntityProperty($targetPrimaryKey)->getType();
+
+
 					if ($relationship instanceof HasMany) {
 						$relationshipTable = $schema->createTable($relationship->getRelationshipTable());
-
-						$relationshipTable->addColumn($relationship->getColumnReferencingSourceTable(), 'integer');
-						$relationshipTable->addColumn($relationship->getColumnReferencingTargetTable(), 'integer');
+						$relationshipTable->addColumn($relationship->getColumnReferencingSourceTable(), $sourcePrimaryKeyType);
+						$relationshipTable->addColumn($relationship->getColumnReferencingTargetTable(), $targetPrimaryKeyType);
 
 						$relationshipTable->addForeignKeyConstraint(
-							$table, [$relationship->getColumnReferencingSourceTable()], [$this->mapperMatrix->getPrimaryKey($relationship->getRelationshipTable())], array('onDelete' => 'CASCADE')
+							$table, [$relationship->getColumnReferencingSourceTable()], [$sourcePrimaryKey], array('onDelete' => 'CASCADE')
 						);
 
 						$relationshipTable->addForeignKeyConstraint(
-							$relationship->getTargetTable(), [$relationship->getColumnReferencingTargetTable()], [$this->mapperMatrix->getPrimaryKey($relationship->getRelationshipTable())], array('onDelete' => 'CASCADE')
+							$relationship->getTargetTable(), [$relationship->getColumnReferencingTargetTable()], [$targetPrimaryKey], array('onDelete' => 'CASCADE')
 						);
 					} elseif ($relationship instanceof HasOne) {
-						$column = $table->addColumn($relationship->getColumnReferencingTargetTable(), 'integer');
+						$column = $table->addColumn($relationship->getColumnReferencingTargetTable(), $targetPrimaryKeyType);
 						if (!$property->hasCustomFlag('nofk')) {
 							$cascade = $property->isNullable() ? 'SET NULL' : 'CASCADE';
 							$table->addForeignKeyConstraint(
