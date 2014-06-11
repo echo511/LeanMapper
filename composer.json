@@ -10,6 +10,7 @@
 	"require": {
 		"nette/nette": "2.2.x-dev",
 		"tharos/leanmapper": "dev-develop",
+		"tharos/leanquery": "dev-master",
 		"kdyby/console": "2.2.*@dev",
 		"doctrine/dbal": "2.5.x-dev"
 	},
