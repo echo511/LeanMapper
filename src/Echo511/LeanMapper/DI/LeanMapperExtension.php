@@ -27,7 +27,7 @@ class LeanMapperExtension extends CompilerExtension
 
 		$this->containerBuilder->addDefinition($this->prefix('configurator'))
 			->setClass('Echo511\LeanMapper\Configurator', array($config));
-		
+
 		$connection = $this->containerBuilder->addDefinition($this->prefix('connection'))
 			->setClass('LeanMapper\Connection')
 			->setFactory('@Echo511\LeanMapper\Configurator::getConnection');
@@ -44,21 +44,31 @@ class LeanMapperExtension extends CompilerExtension
 
 		$this->containerBuilder->addDefinition($this->prefix('schemaGenerator'))
 			->setClass('Echo511\LeanMapper\Schema\SchemaGenerator');
-		
+
 		$this->containerBuilder->addDefinition($this->prefix('databaseSchemaManipulator'))
 			->setClass('Echo511\LeanMapper\Schema\DatabaseSchemaManipulator');
 
 		$this->containerBuilder->addDefinition($this->prefix('createDatabase'))
 			->setClass('Echo511\LeanMapper\Command\CreateDatabaseCommand')
 			->addTag('kdyby.console.command');
-		
+
 		$this->containerBuilder->addDefinition($this->prefix('updateDatabase'))
 			->setClass('Echo511\LeanMapper\Command\UpdateDatabaseCommand')
 			->addTag('kdyby.console.command');
-		
+
 		$this->containerBuilder->addDefinition($this->prefix('dropDatabase'))
 			->setClass('Echo511\LeanMapper\Command\DropDatabaseCommand')
 			->addTag('kdyby.console.command');
+		
+		// LeanQuery
+		$this->containerBuilder->addDefinition($this->prefix('queryHydrator'))
+			->setClass('LeanQuery\Hydrator');
+		
+		$this->containerBuilder->addDefinition($this->prefix('queryHelper'))
+			->setClass('LeanQuery\QueryHelper');
+		
+		$this->containerBuilder->addDefinition($this->prefix('queryFactory'))
+			->setClass('LeanQuery\DomainQueryFactory');
 
 		$useProfiler = isset($config['profiler']) ? $config['profiler'] : $this->containerBuilder->parameters['debugMode'];
 
@@ -71,6 +81,15 @@ class LeanMapperExtension extends CompilerExtension
 				->addSetup('Nette\Diagnostics\Debugger::getBlueScreen()->addPanel(?)', array('DibiNettePanel::renderException'));
 
 			$connection->addSetup('$service->onEvent[] = ?', array(array($panel, 'logEvent')));
+		}
+	}
+
+
+
+	public function beforeCompile()
+	{
+		foreach ($this->containerBuilder->findByTag('echo511.leanmapper.mapper') as $name => $attr) {
+			$this->containerBuilder->getDefinition($name)->setAutowired(false);
 		}
 	}
 
